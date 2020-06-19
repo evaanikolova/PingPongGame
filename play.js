@@ -14,7 +14,7 @@ function Game() {
     this.p1 = new Paddle(5, 0);
     this.p1.y = this.height / 2 - this.p1.height / 2;
 
-    this.touchesP1 = new TouchListener(this.p1);
+    this.touches = new TouchListener(this.p1);
 
     // Display the score for player1
     this.display1 = new Display(this.width / 4, 25);
@@ -22,7 +22,7 @@ function Game() {
     this.p2 = new Paddle(this.width - 5 - 2, 0);
     this.p2.y = this.height / 2 - this.p2.height / 2;
 
-    this.touchesP2 = new TouchListener(this.p2);
+    // this.touchesP2 = new TouchListener(this.p2);
 
     // Display the score for player2
     this.display2 = new Display(this.width * 3 / 4, 25);

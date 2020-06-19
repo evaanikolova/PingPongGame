@@ -8,8 +8,8 @@ function Game() {
     this.height = canvas.height;
     this.context = canvas.getContext("2d");
     this.context.fillStyle = "white";
-    // this.keys = new KeyListener();
-    this.touches = new TouchListener();
+    this.keys = new KeyListener();
+    // this.touches = new TouchListener();
 
     // Add the players' coordinates
     this.p1 = new Paddle(5, 0);

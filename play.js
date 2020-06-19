@@ -8,8 +8,8 @@ function Game() {
     this.height = canvas.height;
     this.context = canvas.getContext("2d");
     this.context.fillStyle = "white";
-    // this.keys = new KeyListener();
-
+    this.keys = new KeyListener();
+    this.clicks = new ButtonClickListener();
 
     // Add the players' coordinates
     this.p1 = new Paddle(5, 0);
@@ -29,7 +29,7 @@ function Game() {
     this.ball.vy = Math.floor(Math.random() * 12 - 6);
     this.ball.vx = 7 - Math.abs(this.ball.vy);
 
-    this.touches = new TouchListener(document);
+    // this.touches = new TouchListener(canvas);
     // this.touches1 = new TouchListener(this.p1);
     // this.touches2 = new TouchListener(this.p2);
 }
@@ -60,17 +60,32 @@ Game.prototype.update = function () {
 
     // We handle the key listeners
     // To which Y direction the paddle is moving (up / down)
-    // if (this.keys.isPressed(83)) { // DOWN (S)
-    //     this.p1.y = Math.min(this.height - this.p1.height, this.p1.y + 5);
-    // } else if (this.keys.isPressed(87)) { // UP (W)
-    //     this.p1.y = Math.max(0, this.p1.y - 5);
-    // }
 
-    // if (this.keys.isPressed(40)) { // DOWN (arrow down)
-    //     this.p2.y = Math.min(this.height - this.p2.height, this.p2.y + 5);
-    // } else if (this.keys.isPressed(38)) { // UP (arrow up)
-    //     this.p2.y = Math.max(0, this.p2.y - 5);
-    // }
+    if (this.keys.isPressed(83)) { // DOWN (S)
+        this.p1.y = Math.min(this.height - this.p1.height, this.p1.y + 5);
+    } else if (this.keys.isPressed(87)) { // UP (W)
+        this.p1.y = Math.max(0, this.p1.y - 5);
+    }
+
+    if (this.keys.isPressed(40)) { // DOWN (arrow down)
+        this.p2.y = Math.min(this.height - this.p2.height, this.p2.y + 5);
+    } else if (this.keys.isPressed(38)) { // UP (arrow up)
+        this.p2.y = Math.max(0, this.p2.y - 5);
+    }
+
+    // Handle the buttons
+
+    if (this.clicks.isClicked("p1Down")) { // DOWN (S)
+        this.p1.y = Math.min(this.height - this.p1.height, this.p1.y + 5);
+    } else if (this.clicks.isClicked("p1Up")) { // UP (W)
+        this.p1.y = Math.max(0, this.p1.y - 5);
+    }
+
+    if (this.clicks.isClicked("p2Down")) { // DOWN (arrow down)
+        this.p2.y = Math.min(this.height - this.p2.height, this.p2.y + 5);
+    } else if (this.clicks.isClicked("p2Up")) { // UP (arrow up)
+        this.p2.y = Math.max(0, this.p2.y - 5);
+    }
 
     // We handle the ball
     this.ball.update();
@@ -187,24 +202,24 @@ Display.prototype.draw = function (p) {
 
 // KEY LISTENER
 
-// function KeyListener() {
-//     this.pressedKeys = [];
+function KeyListener() {
+    this.pressedKeys = [];
 
-//     this.keydown = function (e) {
-//         this.pressedKeys[e.keyCode] = true;
-//     };
+    this.keydown = function (e) {
+        this.pressedKeys[e.keyCode] = true;
+    };
 
-//     this.keyup = function (e) {
-//         this.pressedKeys[e.keyCode] = false;
-//     };
+    this.keyup = function (e) {
+        this.pressedKeys[e.keyCode] = false;
+    };
 
-//     document.addEventListener("keydown", this.keydown.bind(this));
-//     document.addEventListener("keyup", this.keyup.bind(this));
-// }
+    document.addEventListener("keydown", this.keydown.bind(this));
+    document.addEventListener("keyup", this.keyup.bind(this));
+}
 
-// KeyListener.prototype.isPressed = function (key) {
-//     return this.pressedKeys[key] ? true : false;
-// };
+KeyListener.prototype.isPressed = function (key) {
+    return this.pressedKeys[key] ? true : false;
+};
 
 // KeyListener.prototype.addKeyPressListener = function (keyCode, callback) {
 //     document.addEventListener("keypress", function (e) {
@@ -213,42 +228,80 @@ Display.prototype.draw = function (p) {
 //     });
 // };
 
+// BUTTON CLICK LISTENERS
+
+function ButtonClickListener() {
+    this.pressedButtons = {};
+
+    this.btndown = function (e) {
+        this.pressedButtons[e.target.id] = true;
+    };
+
+    this.btnup = function (e) {
+        this.pressedButtons[e.target.id] = false;
+    };
+
+    document.getElementById("p1Up").addEventListener("mousedown", this.btndown.bind(this));
+    document.getElementById("p1Up").addEventListener("mouseup", this.btnup.bind(this));
+    document.getElementById("p1Up").addEventListener("touchstart", this.btndown.bind(this));
+    document.getElementById("p1Up").addEventListener("touchend", this.btnup.bind(this));
+
+    document.getElementById("p1Down").addEventListener("mousedown", this.btndown.bind(this));
+    document.getElementById("p1Down").addEventListener("mouseup", this.btnup.bind(this));
+    document.getElementById("p1Down").addEventListener("touchstart", this.btndown.bind(this));
+    document.getElementById("p1Down").addEventListener("touchend", this.btnup.bind(this));
+
+    document.getElementById("p2Up").addEventListener("mousedown", this.btndown.bind(this));
+    document.getElementById("p2Up").addEventListener("mouseup", this.btnup.bind(this));
+    document.getElementById("p2Up").addEventListener("touchstart", this.btndown.bind(this));
+    document.getElementById("p2Up").addEventListener("touchend", this.btnup.bind(this));
+
+    document.getElementById("p2Down").addEventListener("mousedown", this.btndown.bind(this));
+    document.getElementById("p2Down").addEventListener("mouseup", this.btnup.bind(this));
+    document.getElementById("p2Down").addEventListener("touchstart", this.btndown.bind(this));
+    document.getElementById("p2Down").addEventListener("touchend", this.btnup.bind(this));
+}
+
+ButtonClickListener.prototype.isClicked = function (btn) {
+    return this.pressedButtons[btn] ? true : false;
+};
+
 // TOUCH LISTENERS
 
-function TouchListener(element) {
-    this.touches = [];
-    this.touchMoveListener = function (touch) { };
+// function TouchListener(element) {
+//     this.touches = [];
+//     this.touchMoveListener = function (touch) { };
 
-    element.addEventListener("touchstart", (function (e) {
-        // e.preventDefault();
-        for (var i = 0; i < e.changedTouches.length; i++) {
-            var touch = e.changedTouches[i];
-            this.touches[touch.identifier] = { x: touch.clientX, y: touch.clientY };
-            console.log(e);
-        }
-    }).bind(this));
+//     element.addEventListener("touchstart", (function (e) {
+//         // e.preventDefault();
+//         for (var i = 0; i < e.changedTouches.length; i++) {
+//             var touch = e.changedTouches[i];
+//             this.touches[touch.identifier] = { x: touch.clientX, y: touch.clientY };
+//             console.log(e);
+//         }
+//     }).bind(this));
 
-    element.addEventListener("touchmove", (function (e) {
-        // e.preventDefault();
-        for (var i = 0; i < e.changedTouches.length; i++) {
-            var touch = e.changedTouches[i];
-            var previousTouch = this.touches[touch.identifier];
-            this.touches[touch.identifier] = { x: touch.clientX, y: touch.clientY };
+//     element.addEventListener("touchmove", (function (e) {
+//         // e.preventDefault();
+//         for (var i = 0; i < e.changedTouches.length; i++) {
+//             var touch = e.changedTouches[i];
+//             var previousTouch = this.touches[touch.identifier];
+//             this.touches[touch.identifier] = { x: touch.clientX, y: touch.clientY };
 
-            var offset = { x: touch.clientX - previousTouch.x, y: touch.clientY - previousTouch.y }
-            this.touchMoveListener({ x: touch.clientX, y: touch.clientY, offset: offset });
-            console.log(e);
-        }
-    }).bind(this));
+//             var offset = { x: touch.clientX - previousTouch.x, y: touch.clientY - previousTouch.y }
+//             this.touchMoveListener({ x: touch.clientX, y: touch.clientY, offset: offset });
+//             console.log(offset);
+//         }
+//     }).bind(this));
 
-    element.addEventListener("touchend", (function (e) {
-        // e.preventDefault();
-        for (var i = 0; i < e.changedTouches.length; i++) {
-            delete this.touches[e.changedTouches[i].identifier];
-        }
-        console.log(e);
-    }).bind(this));
-}
+//     element.addEventListener("touchend", (function (e) {
+//         // e.preventDefault();
+//         for (var i = 0; i < e.changedTouches.length; i++) {
+//             delete this.touches[e.changedTouches[i].identifier];
+//         }
+//         console.log(e);
+//     }).bind(this));
+// }
 
 // MAIN
 

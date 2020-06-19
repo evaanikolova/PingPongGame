@@ -1,3 +1,13 @@
 #game {
     background-color: #353535;
 }
+
+.btn {
+    display: block;
+    margin: 15px;
+    height: fit-content;
+}
+
+#p1btns, #p2btns, canvas {
+    float: left;
+}

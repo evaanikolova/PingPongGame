@@ -8,8 +8,8 @@ function Game() {
     this.height = canvas.height;
     this.context = canvas.getContext("2d");
     this.context.fillStyle = "white";
-    this.keys = new KeyListener();
-    // this.touches = new TouchListener();
+    // this.keys = new KeyListener();
+    this.touches = new TouchListener(canvas);
 
     // Add the players' coordinates
     this.p1 = new Paddle(5, 0);
@@ -53,19 +53,19 @@ Game.prototype.update = function () {
     if (this.paused)
         return;
 
-    // We handle the key listeners
-    // To which Y direction the paddle is moving (up / down)
-    if (this.keys.isPressed(83)) { // DOWN (S)
-        this.p1.y = Math.min(this.height - this.p1.height, this.p1.y + 5);
-    } else if (this.keys.isPressed(87)) { // UP (W)
-        this.p1.y = Math.max(0, this.p1.y - 5);
-    }
+    // // We handle the key listeners
+    // // To which Y direction the paddle is moving (up / down)
+    // if (this.keys.isPressed(83)) { // DOWN (S)
+    //     this.p1.y = Math.min(this.height - this.p1.height, this.p1.y + 5);
+    // } else if (this.keys.isPressed(87)) { // UP (W)
+    //     this.p1.y = Math.max(0, this.p1.y - 5);
+    // }
 
-    if (this.keys.isPressed(40)) { // DOWN (arrow down)
-        this.p2.y = Math.min(this.height - this.p2.height, this.p2.y + 5);
-    } else if (this.keys.isPressed(38)) { // UP (arrow up)
-        this.p2.y = Math.max(0, this.p2.y - 5);
-    }
+    // if (this.keys.isPressed(40)) { // DOWN (arrow down)
+    //     this.p2.y = Math.min(this.height - this.p2.height, this.p2.y + 5);
+    // } else if (this.keys.isPressed(38)) { // UP (arrow up)
+    //     this.p2.y = Math.max(0, this.p2.y - 5);
+    // }
 
     // We handle the ball
     this.ball.update();
@@ -182,31 +182,31 @@ Display.prototype.draw = function (p) {
 
 // KEY LISTENER
 
-function KeyListener() {
-    this.pressedKeys = [];
+// function KeyListener() {
+//     this.pressedKeys = [];
 
-    this.keydown = function (e) {
-        this.pressedKeys[e.keyCode] = true;
-    };
+//     this.keydown = function (e) {
+//         this.pressedKeys[e.keyCode] = true;
+//     };
 
-    this.keyup = function (e) {
-        this.pressedKeys[e.keyCode] = false;
-    };
+//     this.keyup = function (e) {
+//         this.pressedKeys[e.keyCode] = false;
+//     };
 
-    document.addEventListener("keydown", this.keydown.bind(this));
-    document.addEventListener("keyup", this.keyup.bind(this));
-}
+//     document.addEventListener("keydown", this.keydown.bind(this));
+//     document.addEventListener("keyup", this.keyup.bind(this));
+// }
 
-KeyListener.prototype.isPressed = function (key) {
-    return this.pressedKeys[key] ? true : false;
-};
+// KeyListener.prototype.isPressed = function (key) {
+//     return this.pressedKeys[key] ? true : false;
+// };
 
-KeyListener.prototype.addKeyPressListener = function (keyCode, callback) {
-    document.addEventListener("keypress", function (e) {
-        if (e.keyCode == keyCode)
-            callback(e);
-    });
-};
+// KeyListener.prototype.addKeyPressListener = function (keyCode, callback) {
+//     document.addEventListener("keypress", function (e) {
+//         if (e.keyCode == keyCode)
+//             callback(e);
+//     });
+// };
 
 // TOUCH LISTENERS
 

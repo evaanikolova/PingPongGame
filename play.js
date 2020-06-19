@@ -10,20 +10,15 @@ function Game() {
     this.context.fillStyle = "white";
     // this.keys = new KeyListener();
 
+
     // Add the players' coordinates
     this.p1 = new Paddle(5, 0);
     this.p1.y = this.height / 2 - this.p1.height / 2;
-
-    this.touches = new TouchListener(this.p1);
-
     // Display the score for player1
     this.display1 = new Display(this.width / 4, 25);
 
     this.p2 = new Paddle(this.width - 5 - 2, 0);
     this.p2.y = this.height / 2 - this.p2.height / 2;
-
-    // this.touchesP2 = new TouchListener(this.p2);
-
     // Display the score for player2
     this.display2 = new Display(this.width * 3 / 4, 25);
 
@@ -33,6 +28,10 @@ function Game() {
     this.ball.y = this.height / 2;
     this.ball.vy = Math.floor(Math.random() * 12 - 6);
     this.ball.vx = 7 - Math.abs(this.ball.vy);
+
+    this.touches = new TouchListener(document);
+    // this.touches1 = new TouchListener(this.p1);
+    // this.touches2 = new TouchListener(this.p2);
 }
 
 Game.prototype.draw = function () {
@@ -59,8 +58,8 @@ Game.prototype.update = function () {
     if (this.paused)
         return;
 
-    // // We handle the key listeners
-    // // To which Y direction the paddle is moving (up / down)
+    // We handle the key listeners
+    // To which Y direction the paddle is moving (up / down)
     // if (this.keys.isPressed(83)) { // DOWN (S)
     //     this.p1.y = Math.min(this.height - this.p1.height, this.p1.y + 5);
     // } else if (this.keys.isPressed(87)) { // UP (W)
@@ -143,7 +142,7 @@ Game.prototype.score = function (p) {
 function Paddle(x, y) {
     this.x = x;
     this.y = y;
-    this.width = 2;
+    this.width = 5;
     this.height = 50;
     this.score = 0;
 }
@@ -221,15 +220,16 @@ function TouchListener(element) {
     this.touchMoveListener = function (touch) { };
 
     element.addEventListener("touchstart", (function (e) {
-        e.preventDefault();
+        // e.preventDefault();
         for (var i = 0; i < e.changedTouches.length; i++) {
             var touch = e.changedTouches[i];
             this.touches[touch.identifier] = { x: touch.clientX, y: touch.clientY };
+            console.log(e);
         }
     }).bind(this));
 
     element.addEventListener("touchmove", (function (e) {
-        e.preventDefault();
+        // e.preventDefault();
         for (var i = 0; i < e.changedTouches.length; i++) {
             var touch = e.changedTouches[i];
             var previousTouch = this.touches[touch.identifier];
@@ -237,14 +237,16 @@ function TouchListener(element) {
 
             var offset = { x: touch.clientX - previousTouch.x, y: touch.clientY - previousTouch.y }
             this.touchMoveListener({ x: touch.clientX, y: touch.clientY, offset: offset });
+            console.log(e);
         }
     }).bind(this));
 
     element.addEventListener("touchend", (function (e) {
-        e.preventDefault();
+        // e.preventDefault();
         for (var i = 0; i < e.changedTouches.length; i++) {
             delete this.touches[e.changedTouches[i].identifier];
         }
+        console.log(e);
     }).bind(this));
 }
 
